@@ -13,12 +13,24 @@ document.addEventListener('DOMContentLoaded', function () {
             post.style.display = 'none';
         }
 
-        // Añadir evento de clic para abrir el popup correspondiente
+        // Añadir evento de clic para abrir el popup correspondiente y cargar el vídeo de manera perezosa
         post.addEventListener('click', function (e) {
             // Obtener el ID del popup desde el atributo de datos
             const popupId = post.getAttribute('data-popup-id');
             if (popupId && post.style.display === 'block') {
                 e.preventDefault(); // Prevenir la navegación si el enlace es "#" o similar
+                const popup = document.querySelector(`#${popupId}`);
+                if (popup) {
+                    const video = popup.querySelector('video');
+                    if (video) {
+                        const source = video.querySelector('source');
+                        if (source.getAttribute('data-src')) {
+                            source.setAttribute('src', source.getAttribute('data-src'));
+                            source.removeAttribute('data-src');
+                            video.load(); // Cargar el vídeo después de establecer el atributo 'src'
+                        }
+                    }
+                }
                 togglePopup(`#${popupId}`, true); // Mostrar el popup
             }
         });
